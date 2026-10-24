@@ -67,16 +67,22 @@ class AddSecurityHeaders
      */
     private function viteDevServerOrigins(): array
     {
-        $url = rtrim(file_get_contents(Vite::hotFile()));
-        $scheme = parse_url($url, PHP_URL_SCHEME);
-        $host = parse_url($url, PHP_URL_HOST);
+        $contents = @file_get_contents(Vite::hotFile());
+        $parts = $contents === false ? false : parse_url(trim($contents));
+
+        // Unreadable or malformed hot file: add nothing rather than guess.
+        if (! is_array($parts) || ! isset($parts['scheme'], $parts['host'], $parts['port'])) {
+            return [];
+        }
+
+        ['scheme' => $scheme, 'host' => $host, 'port' => $port] = $parts;
 
         // CSP has no syntax for IPv6 literals such as [::1], so allow the schemes.
         if (str_starts_with($host, '[')) {
             return $scheme === 'https' ? ['https:', 'wss:'] : ['http:', 'ws:'];
         }
 
-        $origin = $scheme.'://'.$host.':'.parse_url($url, PHP_URL_PORT);
+        $origin = "{$scheme}://{$host}:{$port}";
 
         return [$origin, str_replace(['http://', 'https://'], ['ws://', 'wss://'], $origin)];
     }
