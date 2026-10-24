@@ -1,5 +1,6 @@
 import { degrees, PDFDocument } from 'pdf-lib';
-import { displayedSize, drawParams, pageSizeFor, placeImage } from './layout';
+import { displayedSize } from '@/lib/rotation';
+import { drawParams, pageSizeFor, placeImage } from './layout';
 import type { PdfOptions, PreparedImage } from './types';
 
 /**

@@ -1,3 +1,4 @@
+import { spawnWorker } from '@/lib/worker';
 import type { BuildRequest, WorkerMessage } from './types';
 import workerUrl from './worker?worker&url';
 
@@ -16,7 +17,7 @@ export function createPdf(
     request: BuildRequest,
     onProgress: (done: number, total: number) => void,
 ): { promise: Promise<BuildResult>; cancel: () => void } {
-    const worker = spawnWorker();
+    const worker = spawnWorker(workerUrl);
 
     const promise = new Promise<BuildResult>((resolve, reject) => {
         worker.onmessage = ({ data }: MessageEvent<WorkerMessage>) => {
@@ -54,25 +55,4 @@ export function createPdf(
     worker.postMessage(request);
 
     return { promise, cancel: () => worker.terminate() };
-}
-
-/**
- * Workers must load from the page's own origin. In development the script
- * comes from the Vite dev server on another port, so start the worker from a
- * same-origin blob that imports it.
- */
-function spawnWorker(): Worker {
-    const url = new URL(workerUrl, window.location.href);
-
-    if (url.origin === window.location.origin) {
-        return new Worker(url, { type: 'module' });
-    }
-
-    const boot = URL.createObjectURL(
-        new Blob([`import ${JSON.stringify(url.href)};`], {
-            type: 'text/javascript',
-        }),
-    );
-
-    return new Worker(boot, { type: 'module' });
 }

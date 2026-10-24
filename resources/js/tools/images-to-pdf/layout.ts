@@ -1,6 +1,7 @@
-import type { Margin, PdfOptions, Rotation } from './types';
+import { isQuarterTurn } from '@/lib/rotation';
+import type { Rotation, Size } from '@/lib/rotation';
+import type { Margin, PdfOptions } from './types';
 
-type Size = { width: number; height: number };
 type Box = Size & { x: number; y: number };
 
 /** Page sizes in PDF points (1/72 inch), portrait. */
@@ -20,16 +21,6 @@ export const MARGINS: Record<Margin, number> = {
  * A4. The image keeps its full resolution; only the page's printed size is set.
  */
 const FIT_LONG_SIDE = PAGE_SIZES.a4.height;
-
-export function addRotation(a: Rotation, b: Rotation): Rotation {
-    return ((a + b) % 360) as Rotation;
-}
-
-export function displayedSize(size: Size, rotation: Rotation): Size {
-    return rotation === 90 || rotation === 270
-        ? { width: size.height, height: size.width }
-        : size;
-}
 
 export function pageSizeFor(image: Size, options: PdfOptions): Size {
     const margin = MARGINS[options.margin];
@@ -81,7 +72,7 @@ export function placeImage(page: Size, image: Size, margin: Margin): Box {
  * fill, return the origin and unrotated size that land it there.
  */
 export function drawParams(box: Box, rotation: Rotation) {
-    const turned = rotation === 90 || rotation === 270;
+    const turned = isQuarterTurn(rotation);
     const width = turned ? box.height : box.width;
     const height = turned ? box.width : box.height;
     const origin = {

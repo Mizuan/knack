@@ -31,6 +31,13 @@ class PublicPagesTest extends TestCase
             ->assertInertia(fn (Assert $page) => $page->component('tools/images-to-pdf'));
     }
 
+    public function test_the_merge_images_tool_is_public()
+    {
+        $this->get(route('tools.merge-images'))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page->component('tools/merge-images'));
+    }
+
     public function test_public_registration_is_disabled()
     {
         $this->get('/register')->assertNotFound();

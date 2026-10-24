@@ -5,8 +5,9 @@ export type Margin = 'none' | 'small' | 'normal';
 /** One PDF with every image, or a ZIP holding one PDF per image. */
 export type Output = 'single' | 'separate';
 
-/** Clockwise rotation, in degrees, needed to show an image upright. */
-export type Rotation = 0 | 90 | 180 | 270;
+import type { Rotation } from '@/lib/rotation';
+
+export type { Rotation };
 
 export type PdfOptions = {
     pageSize: PageSize;

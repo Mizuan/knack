@@ -1,6 +1,6 @@
 import type { LucideIcon } from 'lucide-react';
 import { FileImage, Files, Images, Shrink } from 'lucide-react';
-import { imagesToPdf } from '@/routes/tools';
+import { imagesToPdf, mergeImages } from '@/routes/tools';
 
 export type Tool = {
     slug: string;
@@ -26,6 +26,7 @@ export const tools: Tool[] = [
         description:
             'Join two or more images side by side, stacked or in a grid.',
         icon: Images,
+        href: mergeImages.url(),
     },
     {
         slug: 'merge-pdfs',

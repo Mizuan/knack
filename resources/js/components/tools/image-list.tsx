@@ -16,40 +16,120 @@ import {
     useSortable,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { CircleAlert, RotateCw, X } from 'lucide-react';
+import {
+    ArrowDownAZ,
+    CircleAlert,
+    Plus,
+    RotateCw,
+    Trash2,
+    X,
+} from 'lucide-react';
+import type { ReactNode } from 'react';
+import { Button } from '@/components/ui/button';
 import { Spinner } from '@/components/ui/spinner';
+import type { ImageItem, ImageList as List } from '@/hooks/use-image-list';
 import { formatBytes } from '@/lib/files';
 import { cn } from '@/lib/utils';
-import { displayedSize, pageSizeFor, placeImage } from './layout';
-import type { PdfOptions, Rotation } from './types';
 
-export type ImageItem = {
-    id: string;
-    name: string;
-    size: number;
-    /** The image to embed; HEIC photos are already converted to JPEG here. */
-    source: Blob | null;
-    thumbnail: string | null;
-    /** Upright size in pixels, before the user's own rotation. */
-    width: number;
-    height: number;
-    rotation: Rotation;
-    status: 'loading' | 'ready' | 'error';
-};
-
-export default function ImageGrid({
-    items,
-    options,
-    onReorder,
-    onRotate,
-    onRemove,
+/**
+ * The picked images: a toolbar (add, sort, clear) and a grid you can drag to
+ * reorder. Each tool draws its own preview inside the cards.
+ */
+export default function ImageList({
+    list,
+    pick,
+    busy,
+    renderPreview,
+    className,
 }: {
-    items: ImageItem[];
-    options: PdfOptions;
-    onReorder: (items: ImageItem[]) => void;
-    onRotate: (id: string) => void;
-    onRemove: (id: string) => void;
+    list: List;
+    pick: () => void;
+    busy: boolean;
+    renderPreview: (item: ImageItem) => ReactNode;
+    /** Grid columns, e.g. to fit more, smaller cards. */
+    className?: string;
 }) {
+    const { items } = list;
+
+    return (
+        <section aria-label="Images" className="min-w-0">
+            <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
+                <p className="text-sm text-muted-foreground">
+                    <span className="font-semibold text-foreground">
+                        {items.length} {items.length === 1 ? 'image' : 'images'}
+                    </span>{' '}
+                    · {formatBytes(list.totalBytes)}
+                </p>
+                <div className="flex flex-wrap gap-1.5">
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        className="h-10 rounded-full"
+                        onClick={pick}
+                        disabled={busy || items.length >= list.maxImages}
+                    >
+                        <Plus />
+                        Add
+                    </Button>
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        className="h-10 rounded-full"
+                        onClick={list.sortByName}
+                        disabled={busy || items.length < 2}
+                    >
+                        <ArrowDownAZ />
+                        Sort by name
+                    </Button>
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-10 rounded-full"
+                        onClick={list.clear}
+                        disabled={busy}
+                    >
+                        <Trash2 />
+                        Clear
+                    </Button>
+                </div>
+            </div>
+
+            <fieldset
+                disabled={busy}
+                className={cn(
+                    'min-w-0 transition-opacity',
+                    busy && 'pointer-events-none opacity-60',
+                )}
+            >
+                <SortableGrid
+                    list={list}
+                    renderPreview={renderPreview}
+                    className={className}
+                />
+            </fieldset>
+            <p className="mt-4 text-xs text-muted-foreground">
+                <span className="pointer-coarse:hidden">
+                    Drag images to change the order, or drop more images
+                    anywhere on the page.
+                </span>
+                <span className="hidden pointer-coarse:inline">
+                    Press and hold an image to move it.
+                </span>
+            </p>
+        </section>
+    );
+}
+
+function SortableGrid({
+    list,
+    renderPreview,
+    className,
+}: {
+    list: List;
+    renderPreview: (item: ImageItem) => ReactNode;
+    className?: string;
+}) {
+    const { items } = list;
     const sensors = useSensors(
         useSensor(MouseSensor, { activationConstraint: { distance: 6 } }),
         // Long-press to drag on touch screens, so a normal swipe still scrolls.
@@ -69,7 +149,7 @@ export default function ImageGrid({
         const from = items.findIndex((item) => item.id === active.id);
         const to = items.findIndex((item) => item.id === over.id);
 
-        onReorder(arrayMove(items, from, to));
+        list.reorder(arrayMove(items, from, to));
     };
 
     return (
@@ -80,20 +160,27 @@ export default function ImageGrid({
             accessibility={{
                 screenReaderInstructions: {
                     draggable:
-                        'To move a page, press space or enter, use the arrow keys, then press space or enter again to drop it.',
+                        'To move an image, press space or enter, use the arrow keys, then press space or enter again to drop it.',
                 },
             }}
         >
             <SortableContext items={items} strategy={rectSortingStrategy}>
-                <ol className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 xl:grid-cols-4">
+                <ol
+                    className={cn(
+                        'grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 xl:grid-cols-4',
+                        className,
+                    )}
+                >
                     {items.map((item, index) => (
                         <ImageCard
                             key={item.id}
                             item={item}
-                            options={options}
-                            page={index + 1}
-                            onRotate={() => onRotate(item.id)}
-                            onRemove={() => onRemove(item.id)}
+                            position={index + 1}
+                            preview={
+                                item.status === 'ready' && renderPreview(item)
+                            }
+                            onRotate={() => list.rotate(item.id)}
+                            onRemove={() => list.remove(item.id)}
                         />
                     ))}
                 </ol>
@@ -104,14 +191,14 @@ export default function ImageGrid({
 
 function ImageCard({
     item,
-    options,
-    page,
+    position,
+    preview,
     onRotate,
     onRemove,
 }: {
     item: ImageItem;
-    options: PdfOptions;
-    page: number;
+    position: number;
+    preview: ReactNode;
     onRotate: () => void;
     onRemove: () => void;
 }) {
@@ -138,13 +225,11 @@ function ImageCard({
             <div
                 {...attributes}
                 {...listeners}
-                aria-label={`Page ${page}: ${item.name}`}
+                aria-label={`${position}: ${item.name}`}
                 className="cursor-grab touch-manipulation rounded-xl outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 active:cursor-grabbing"
             >
                 <div className="relative flex aspect-square items-center justify-center overflow-hidden rounded-xl bg-muted">
-                    {item.status === 'ready' && item.thumbnail && (
-                        <PagePreview item={item} options={options} />
-                    )}
+                    {preview}
                     {item.status === 'loading' && (
                         <Spinner className="size-6 text-muted-foreground" />
                     )}
@@ -157,7 +242,7 @@ function ImageCard({
                 </div>
                 <div className="mt-2 flex items-center gap-2 px-1 pb-0.5">
                     <span className="flex h-6 min-w-6 shrink-0 items-center justify-center rounded-md bg-primary px-1.5 text-xs font-semibold text-primary-foreground tabular-nums">
-                        {page}
+                        {position}
                     </span>
                     <span className="min-w-0 flex-1">
                         <span className="block truncate text-xs font-medium">
@@ -194,7 +279,7 @@ function CardButton({
 }: {
     label: string;
     onClick: () => void;
-    children: React.ReactNode;
+    children: ReactNode;
 }) {
     return (
         <button
@@ -209,69 +294,30 @@ function CardButton({
     );
 }
 
-const percent = (value: number) => `${value * 100}%`;
-
-/**
- * The page as it will come out: its shape, orientation and margin, with the
- * image placed by the same layout code the PDF builder uses.
- */
-function PagePreview({
+/** An image drawn upright and turned by the user's rotation, filling its box. */
+export function RotatedImage({
     item,
-    options,
+    boxWidth,
+    boxHeight,
 }: {
     item: ImageItem;
-    options: PdfOptions;
+    boxWidth: number;
+    boxHeight: number;
 }) {
-    const upright = displayedSize(item, item.rotation);
-    const page = pageSizeFor(upright, options);
-    const box = placeImage(page, upright, options.margin);
-    const wide = page.width >= page.height;
     const turned = item.rotation === 90 || item.rotation === 270;
-
-    // Page size as a share of the square preview area.
-    const pageWidth = wide ? 1 : page.width / page.height;
-    const pageHeight = wide ? page.height / page.width : 1;
+    const percent = (value: number) => `${value * 100}%`;
 
     return (
-        <div className="absolute inset-[9%]">
-            <div
-                className="absolute bg-white shadow-[0_1px_3px_rgb(20_22_27/0.18)] ring-1 ring-black/5 transition-all duration-300"
-                style={{
-                    width: percent(pageWidth),
-                    height: percent(pageHeight),
-                    left: percent((1 - pageWidth) / 2),
-                    top: percent((1 - pageHeight) / 2),
-                }}
-            >
-                <div
-                    className="absolute overflow-hidden transition-all duration-300"
-                    style={{
-                        left: percent(box.x / page.width),
-                        // PDF y runs up from the bottom; CSS top runs down.
-                        top: percent(
-                            (page.height - box.y - box.height) / page.height,
-                        ),
-                        width: percent(box.width / page.width),
-                        height: percent(box.height / page.height),
-                    }}
-                >
-                    <img
-                        src={item.thumbnail ?? undefined}
-                        alt=""
-                        draggable={false}
-                        className="absolute top-1/2 left-1/2 max-w-none transition-transform duration-300"
-                        style={{
-                            width: turned
-                                ? percent(box.height / box.width)
-                                : '100%',
-                            height: turned
-                                ? percent(box.width / box.height)
-                                : '100%',
-                            transform: `translate(-50%, -50%) rotate(${item.rotation}deg)`,
-                        }}
-                    />
-                </div>
-            </div>
-        </div>
+        <img
+            src={item.thumbnail ?? undefined}
+            alt=""
+            draggable={false}
+            className="absolute top-1/2 left-1/2 max-w-none transition-transform duration-300"
+            style={{
+                width: turned ? percent(boxHeight / boxWidth) : '100%',
+                height: turned ? percent(boxWidth / boxHeight) : '100%',
+                transform: `translate(-50%, -50%) rotate(${item.rotation}deg)`,
+            }}
+        />
     );
 }

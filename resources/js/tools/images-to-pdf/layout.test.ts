@@ -1,12 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import {
-    addRotation,
-    displayedSize,
-    drawParams,
-    PAGE_SIZES,
-    pageSizeFor,
-    placeImage,
-} from './layout';
+import { drawParams, PAGE_SIZES, pageSizeFor, placeImage } from './layout';
 import type { PdfOptions, Rotation } from './types';
 
 const options = (overrides: Partial<PdfOptions> = {}): PdfOptions => ({
@@ -59,24 +52,6 @@ describe('placeImage', () => {
         expect(box.height).toBeCloseTo(264);
         expect(box.x).toBeCloseTo(36);
         expect(box.y).toBeCloseTo((800 - 264) / 2);
-    });
-});
-
-describe('rotation helpers', () => {
-    it('wraps rotations past a full turn', () => {
-        expect(addRotation(270, 180)).toBe(90);
-        expect(addRotation(90, 270)).toBe(0);
-    });
-
-    it('swaps width and height for quarter turns', () => {
-        expect(displayedSize({ width: 3, height: 2 }, 90)).toEqual({
-            width: 2,
-            height: 3,
-        });
-        expect(displayedSize({ width: 3, height: 2 }, 180)).toEqual({
-            width: 3,
-            height: 2,
-        });
     });
 });
 

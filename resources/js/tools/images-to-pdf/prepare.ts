@@ -1,5 +1,5 @@
 import { jpegOrientation, orientationToRotation } from './exif';
-import { addRotation } from './layout';
+import { addRotation } from '@/lib/rotation';
 import type { PreparedImage, Rotation } from './types';
 
 /**
