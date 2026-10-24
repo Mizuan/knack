@@ -33,7 +33,7 @@ class SecurityHeadersTest extends TestCase
 
     public function test_pages_send_the_hardening_headers()
     {
-        $this->get(route('home'))
+        $this->get(str_replace('https://', 'http://', route('home')))
             ->assertHeader('X-Content-Type-Options', 'nosniff')
             ->assertHeader('X-Frame-Options', 'DENY')
             ->assertHeader('Referrer-Policy', 'strict-origin-when-cross-origin')

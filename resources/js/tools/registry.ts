@@ -1,5 +1,6 @@
 import type { LucideIcon } from 'lucide-react';
 import { FileImage, Files, Images, Shrink } from 'lucide-react';
+import { imagesToPdf } from '@/routes/tools';
 
 export type Tool = {
     slug: string;
@@ -17,6 +18,7 @@ export const tools: Tool[] = [
         description:
             'Turn photos and scans into one PDF, in the order you want.',
         icon: FileImage,
+        href: imagesToPdf.url(),
     },
     {
         slug: 'merge-images',

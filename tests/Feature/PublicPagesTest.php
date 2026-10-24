@@ -24,6 +24,13 @@ class PublicPagesTest extends TestCase
             ->assertInertia(fn (Assert $page) => $page->component('privacy'));
     }
 
+    public function test_the_images_to_pdf_tool_is_public()
+    {
+        $this->get(route('tools.images-to-pdf'))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page->component('tools/images-to-pdf'));
+    }
+
     public function test_public_registration_is_disabled()
     {
         $this->get('/register')->assertNotFound();

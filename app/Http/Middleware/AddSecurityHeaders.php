@@ -47,7 +47,8 @@ class AddSecurityHeaders
             'img-src' => ["'self'", 'data:', 'blob:'],
             'font-src' => ["'self'", ...$dev],
             'connect-src' => ["'self'", 'blob:', ...$dev],
-            'worker-src' => ["'self'", 'blob:'],
+            // Module workers fetch their imports under worker-src, hence the dev server here too.
+            'worker-src' => ["'self'", 'blob:', ...$dev],
             'object-src' => ["'none'"],
             'base-uri' => ["'self'"],
             'form-action' => ["'self'"],
