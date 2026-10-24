@@ -3,9 +3,12 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="Everyday file tools that run in your browser. Turn images into a PDF and more, without uploading your files.">
+        <meta name="theme-color" content="#f5f4ef" media="(prefers-color-scheme: light)">
+        <meta name="theme-color" content="#101216" media="(prefers-color-scheme: dark)">
 
         {{-- Inline script to detect system dark mode preference and apply it immediately --}}
-        <script>
+        <script nonce="{{ Vite::cspNonce() }}">
             (function() {
                 const appearance = '{{ $appearance ?? "system" }}';
 
@@ -22,11 +25,11 @@
         {{-- Inline style to set the HTML background color based on our theme in app.css --}}
         <style>
             html {
-                background-color: oklch(1 0 0);
+                background-color: #f5f4ef;
             }
 
             html.dark {
-                background-color: oklch(0.145 0 0);
+                background-color: #101216;
             }
         </style>
 
