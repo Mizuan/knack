@@ -45,6 +45,7 @@ export default function FileGrid<Meta>({
     renderPreview,
     renderInfo = (item) => formatBytes(item.size),
     renderExtra,
+    canRotate = true,
     className,
 }: {
     list: FileListState<Meta>;
@@ -55,6 +56,8 @@ export default function FileGrid<Meta>({
     renderInfo?: Render<Meta>;
     /** Controls under the card, outside the drag handle. */
     renderExtra?: Render<Meta>;
+    /** Show the rotate button on each card. */
+    canRotate?: boolean;
     /** Grid columns, e.g. to fit more, smaller cards. */
     className?: string;
 }) {
@@ -116,6 +119,7 @@ export default function FileGrid<Meta>({
                     renderPreview={renderPreview}
                     renderInfo={renderInfo}
                     renderExtra={renderExtra}
+                    canRotate={canRotate}
                     className={className}
                 />
             </fieldset>
@@ -138,12 +142,14 @@ function SortableGrid<Meta>({
     renderPreview,
     renderInfo,
     renderExtra,
+    canRotate,
     className,
 }: {
     list: FileListState<Meta>;
     renderPreview: Render<Meta>;
     renderInfo: Render<Meta>;
     renderExtra?: Render<Meta>;
+    canRotate: boolean;
     className?: string;
 }) {
     const { items } = list;
@@ -204,7 +210,11 @@ function SortableGrid<Meta>({
                             extra={
                                 item.status === 'ready' && renderExtra?.(item)
                             }
-                            onRotate={() => list.rotate(item.id)}
+                            onRotate={
+                                canRotate
+                                    ? () => list.rotate(item.id)
+                                    : undefined
+                            }
                             onRemove={() => list.remove(item.id)}
                         />
                     ))}
@@ -228,7 +238,7 @@ function FileCard<Meta>({
     preview: ReactNode;
     info: ReactNode;
     extra: ReactNode;
-    onRotate: () => void;
+    onRotate?: () => void;
     onRemove: () => void;
 }) {
     const {
@@ -287,7 +297,7 @@ function FileCard<Meta>({
             {extra && <div className="mt-2 px-1 pb-0.5">{extra}</div>}
 
             <div className="absolute top-3 right-3 flex gap-1.5">
-                {item.status === 'ready' && (
+                {onRotate && item.status === 'ready' && (
                     <CardButton
                         label={`Rotate ${item.name}`}
                         onClick={onRotate}

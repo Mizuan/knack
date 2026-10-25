@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { pdfNames } from './names';
+import { pdfNames } from './file-names';
 
 describe('pdfNames', () => {
     it('swaps the image extension for .pdf', () => {

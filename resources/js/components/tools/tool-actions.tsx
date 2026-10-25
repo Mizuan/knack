@@ -21,6 +21,7 @@ export default function ToolActions({
     disabled,
     progress,
     result,
+    note,
     onRun,
     onCancel,
     onStartOver,
@@ -29,6 +30,8 @@ export default function ToolActions({
     disabled: boolean;
     progress: ToolProgress | null;
     result: ToolResult | null;
+    /** A short message shown above the button, e.g. why there's no result. */
+    note?: string | null;
     onRun: () => void;
     onCancel: () => void;
     onStartOver: () => void;
@@ -72,13 +75,23 @@ export default function ToolActions({
     }
 
     return (
-        <Button
-            onClick={onRun}
-            disabled={disabled}
-            className="h-12 w-full rounded-full text-base"
-        >
-            {label}
-        </Button>
+        <div className="space-y-3">
+            {note && (
+                <p
+                    className="rounded-xl bg-secondary px-4 py-3 text-sm"
+                    aria-live="polite"
+                >
+                    {note}
+                </p>
+            )}
+            <Button
+                onClick={onRun}
+                disabled={disabled}
+                className="h-12 w-full rounded-full text-base"
+            >
+                {label}
+            </Button>
+        </div>
     );
 }
 

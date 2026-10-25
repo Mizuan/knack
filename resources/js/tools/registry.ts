@@ -1,6 +1,11 @@
 import type { LucideIcon } from 'lucide-react';
 import { FileImage, Files, Images, Shrink } from 'lucide-react';
-import { imagesToPdf, mergeImages, mergePdfs } from '@/routes/tools';
+import {
+    compressPdf,
+    imagesToPdf,
+    mergeImages,
+    mergePdfs,
+} from '@/routes/tools';
 
 export type Tool = {
     slug: string;
@@ -42,5 +47,6 @@ export const tools: Tool[] = [
         description:
             'Make a PDF smaller so it fits in an email or upload form.',
         icon: Shrink,
+        href: compressPdf.url(),
     },
 ];

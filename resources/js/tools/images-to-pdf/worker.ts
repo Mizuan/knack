@@ -1,7 +1,7 @@
 /// <reference lib="webworker" />
 import { zipSync } from 'fflate';
 import { buildPdf } from './build-pdf';
-import { pdfNames } from './names';
+import { pdfNames } from '@/lib/file-names';
 import { prepareImage } from './prepare';
 import type { BuildRequest, WorkerMessage } from './types';
 

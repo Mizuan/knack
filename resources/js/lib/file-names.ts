@@ -1,4 +1,4 @@
-import { safeFileName } from '@/lib/files';
+import { safeFileName } from './files';
 
 /**
  * A PDF name for each image ("IMG_0012.HEIC" → "IMG_0012.pdf"), numbered when
