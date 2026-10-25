@@ -10,8 +10,8 @@ export default function Privacy() {
                     Privacy
                 </h1>
                 <p className="mt-4 text-lg text-muted-foreground">
-                    Knack's tools run entirely in your browser. Your files are
-                    never uploaded to our server.
+                    Tinyfold's tools run entirely in your browser. Your files
+                    are never uploaded to our server.
                 </p>
 
                 <div className="mt-10 space-y-8 leading-relaxed [&_h2]:font-display [&_h2]:text-xl [&_h2]:font-bold [&_h2]:tracking-tight [&_p]:mt-2 [&_p]:text-muted-foreground">
@@ -39,7 +39,7 @@ export default function Privacy() {
                     <section>
                         <h2>Cookies</h2>
                         <p>
-                            Knack only sets cookies the site needs to work: a
+                            Tinyfold only sets cookies the site needs to work: a
                             session cookie, a security token that protects
                             forms, and your light or dark theme choice. There
                             are no advertising or tracking cookies, and no
@@ -50,9 +50,9 @@ export default function Privacy() {
                     <section>
                         <h2>Open-source software</h2>
                         <p>
-                            Knack is built with open-source libraries, including
-                            pdf-lib (MIT), heic-to and libheif (LGPL-3.0) for
-                            iPhone photos, and dnd-kit (MIT).
+                            Tinyfold is built with open-source libraries,
+                            including pdf-lib (MIT), heic-to and libheif
+                            (LGPL-3.0) for iPhone photos, and dnd-kit (MIT).
                         </p>
                     </section>
                 </div>

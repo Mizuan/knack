@@ -1,8 +1,8 @@
 import type { SVGAttributes } from 'react';
 
 /**
- * The Knack "Join" mark: the K's two arms meet at the stem, two files in and
- * one out. Colours are fixed so the mark reads the same everywhere.
+ * The Tinyfold "Corner fold" mark: a page with its corner folded over.
+ * Colours are fixed so the mark reads the same everywhere.
  */
 export default function AppLogoIcon(props: SVGAttributes<SVGElement>) {
     return (
@@ -19,24 +19,13 @@ export default function AppLogoIcon(props: SVGAttributes<SVGElement>) {
                 className="fill-[#14161B] dark:fill-[#2A2D35]"
             />
             <path
-                d="M27 32L43 48"
-                stroke="#FF5B23"
-                strokeWidth="8"
-                strokeLinecap="round"
-                opacity="0.5"
+                d="M19 12H37L46 21V50A2 2 0 0 1 44 52H19A2 2 0 0 1 17 50V14A2 2 0 0 1 19 12Z"
+                fill="#F5F4EF"
             />
-            <path
-                d="M22 16V48"
-                stroke="#F5F4EF"
-                strokeWidth="8"
-                strokeLinecap="round"
-            />
-            <path
-                d="M43 16L27 32"
-                stroke="#FF5B23"
-                strokeWidth="8"
-                strokeLinecap="round"
-            />
+            <path d="M37 12V19A2 2 0 0 0 39 21H46Z" fill="#FF5B23" />
+            <rect x="22" y="30" width="18" height="3" rx="1.5" fill="#C9C5BA" />
+            <rect x="22" y="37" width="13" height="3" rx="1.5" fill="#C9C5BA" />
+            <rect x="22" y="44" width="16" height="3" rx="1.5" fill="#C9C5BA" />
         </svg>
     );
 }

@@ -21,7 +21,7 @@ class BackupDatabaseCommandTest extends TestCase
     {
         parent::setUp();
 
-        $this->folder = sys_get_temp_dir().'/knack-backups-'.uniqid();
+        $this->folder = sys_get_temp_dir().'/tinyfold-backups-'.uniqid();
         File::ensureDirectoryExists($this->folder);
         touch($this->folder.'/app.sqlite');
 
@@ -46,7 +46,7 @@ class BackupDatabaseCommandTest extends TestCase
 
         $this->artisan('app:backup-database', ['--path' => $this->folder])->assertSuccessful();
 
-        $backups = File::glob($this->folder.'/knack-*.sqlite');
+        $backups = File::glob($this->folder.'/tinyfold-*.sqlite');
         $this->assertCount(1, $backups);
 
         $copy = new PDO('sqlite:'.$backups[0]);
@@ -65,8 +65,8 @@ class BackupDatabaseCommandTest extends TestCase
         Carbon::setTestNow();
 
         $this->assertSame(
-            ['knack-2026-01-02-030000.sqlite', 'knack-2026-01-03-030000.sqlite'],
-            collect(File::glob($this->folder.'/knack-*.sqlite'))->map(fn ($path) => basename($path))->sort()->values()->all(),
+            ['tinyfold-2026-01-02-030000.sqlite', 'tinyfold-2026-01-03-030000.sqlite'],
+            collect(File::glob($this->folder.'/tinyfold-*.sqlite'))->map(fn ($path) => basename($path))->sort()->values()->all(),
         );
     }
 

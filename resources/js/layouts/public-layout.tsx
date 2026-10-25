@@ -16,7 +16,7 @@ export default function PublicLayout({ children }: { children: ReactNode }) {
                     >
                         <AppLogoIcon className="size-9" />
                         <span className="font-display text-2xl leading-none font-extrabold tracking-tight">
-                            knack
+                            tinyfold
                         </span>
                     </Link>
                     <nav className="flex items-center gap-1">
@@ -37,7 +37,7 @@ export default function PublicLayout({ children }: { children: ReactNode }) {
             <footer className="border-t border-border/70">
                 <div className="mx-auto flex max-w-6xl flex-col gap-3 px-4 py-8 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between sm:px-6">
                     <p>
-                        Knack runs in your browser. Your files are never
+                        Tinyfold runs in your browser. Your files are never
                         uploaded.
                     </p>
                     <div className="flex gap-5">

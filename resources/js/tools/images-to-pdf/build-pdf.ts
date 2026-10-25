@@ -17,8 +17,8 @@ export async function buildPdf(
     const doc = await PDFDocument.create();
 
     doc.setTitle(meta.title);
-    doc.setCreator('Knack');
-    doc.setProducer('Knack');
+    doc.setCreator('Tinyfold');
+    doc.setProducer('Tinyfold');
 
     for (let i = 0; i < count; i++) {
         const prepared = await load(i);

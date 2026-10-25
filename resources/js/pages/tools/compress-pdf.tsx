@@ -115,7 +115,7 @@ export default function CompressPdf() {
 
             if (after >= before * WORTHWHILE) {
                 setNote(
-                    `${count === 1 ? 'This PDF is' : 'These PDFs are'} already about as small as Knack can make ${count === 1 ? 'it' : 'them'}${strength === 'strong' ? '.' : '. Try Strong for a smaller file with softer images.'}`,
+                    `${count === 1 ? 'This PDF is' : 'These PDFs are'} already about as small as Tinyfold can make ${count === 1 ? 'it' : 'them'}${strength === 'strong' ? '.' : '. Try Strong for a smaller file with softer images.'}`,
                 );
 
                 return;
@@ -193,9 +193,9 @@ export default function CompressPdf() {
                             hint={STRENGTH_HINTS[strength]}
                         />
                         <p className="text-xs text-muted-foreground">
-                            Knack shrinks the photos inside the PDF and clears
-                            out leftover data. Text stays sharp. PDFs that are
-                            mostly text are usually small already.
+                            Tinyfold shrinks the photos inside the PDF and
+                            clears out leftover data. Text stays sharp. PDFs
+                            that are mostly text are usually small already.
                         </p>
                         <FileNameField
                             value={name}

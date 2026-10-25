@@ -14,8 +14,8 @@ self.onmessage = async ({ data }: MessageEvent<MergeRequest>) => {
         const merged = await PDFDocument.create();
 
         merged.setTitle(title);
-        merged.setCreator('Knack');
-        merged.setProducer('Knack');
+        merged.setCreator('Tinyfold');
+        merged.setProducer('Tinyfold');
 
         // Load one source at a time so only one is in memory with the result.
         for (const [i, file] of files.entries()) {

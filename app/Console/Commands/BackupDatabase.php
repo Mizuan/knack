@@ -35,12 +35,12 @@ class BackupDatabase extends Command
 
         File::ensureDirectoryExists($folder);
 
-        $target = $folder.'/knack-'.now()->format('Y-m-d-His').'.sqlite';
+        $target = $folder.'/tinyfold-'.now()->format('Y-m-d-His').'.sqlite';
 
         // VACUUM INTO writes a consistent copy, even while the app is writing.
         $connection->statement('VACUUM INTO ?', [$target]);
 
-        $backups = collect(File::glob($folder.'/knack-*.sqlite'))->sort()->values();
+        $backups = collect(File::glob($folder.'/tinyfold-*.sqlite'))->sort()->values();
 
         $backups->slice(0, max(0, $backups->count() - $keep))->each(fn (string $old) => File::delete($old));
 

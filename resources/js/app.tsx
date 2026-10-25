@@ -7,7 +7,7 @@ import AuthLayout from '@/layouts/auth-layout';
 import PublicLayout from '@/layouts/public-layout';
 import SettingsLayout from '@/layouts/settings/layout';
 
-const appName = import.meta.env.VITE_APP_NAME || 'Knack';
+const appName = import.meta.env.VITE_APP_NAME || 'Tinyfold';
 
 void createInertiaApp({
     title: (title) => (title ? `${title} · ${appName}` : appName),

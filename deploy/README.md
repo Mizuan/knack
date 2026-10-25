@@ -1,10 +1,11 @@
-# Deploying Knack to Forge
+# Deploying Tinyfold to Forge
 
-Knack runs on a Laravel Forge server (DigitalOcean). Files are processed in the
+Tinyfold runs on a Laravel Forge server (DigitalOcean). Files are processed in the
 visitor's browser, so the server only serves the app: no upload limits, queues
 or file storage to configure.
 
-Replace `knack.example.com` below with the real domain.
+The production domain is `tinyfold.app`. Every `.app` domain must be served
+over HTTPS, which the setup below does.
 
 ## 1. Server
 
@@ -14,14 +15,14 @@ Replace `knack.example.com` below with the real domain.
 - A folder for the database outside the site, so deploys never touch it:
 
     ```sh
-    mkdir -p /home/forge/knack-data
-    touch /home/forge/knack-data/database.sqlite
+    mkdir -p /home/forge/tinyfold-data
+    touch /home/forge/tinyfold-data/database.sqlite
     ```
 
 ## 2. Site
 
-- New site: `knack.example.com`, PHP 8.4, web directory `/public`.
-- Repository: `Mizuan/knack`, branch `main`. Leave "Install Composer
+- New site: `tinyfold.app`, PHP 8.4, web directory `/public`.
+- Repository: `Mizuan/tinyfold`, branch `main`. Leave "Install Composer
   dependencies" on.
 - Zero-downtime deployments: on.
 
@@ -31,17 +32,17 @@ Set these in the site's Environment panel (generate `APP_KEY` with
 `php artisan key:generate --show`):
 
 ```dotenv
-APP_NAME=Knack
+APP_NAME=Tinyfold
 APP_ENV=production
 APP_KEY=
 APP_DEBUG=false
-APP_URL=https://knack.example.com
+APP_URL=https://tinyfold.app
 
 LOG_CHANNEL=daily
 LOG_LEVEL=warning
 
 DB_CONNECTION=sqlite
-DB_DATABASE=/home/forge/knack-data/database.sqlite
+DB_DATABASE=/home/forge/tinyfold-data/database.sqlite
 
 SESSION_DRIVER=database
 SESSION_SECURE_COOKIE=true
@@ -100,9 +101,9 @@ outbound internet during the build only.
 ## 6. Checks
 
 ```sh
-curl -I https://knack.example.com          # 200, Content-Security-Policy, Strict-Transport-Security
-curl -s https://knack.example.com/up       # health check
-curl -s -o /dev/null -w "%{http_code}\n" https://knack.example.com/register   # 404
+curl -I https://tinyfold.app          # 200, Content-Security-Policy, Strict-Transport-Security
+curl -s https://tinyfold.app/up       # health check
+curl -s -o /dev/null -w "%{http_code}\n" https://tinyfold.app/register   # 404
 ```
 
 Then open `/images-to-pdf` and build a PDF from a few photos, including an
