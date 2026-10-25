@@ -1,6 +1,5 @@
-import { RotatedImage } from '@/components/tools/image-list';
+import { RotatedImage } from '@/components/tools/file-grid';
 import type { ImageItem } from '@/hooks/use-image-list';
-import { displayedSize } from '@/lib/rotation';
 import { cn } from '@/lib/utils';
 import type { Plan } from './types';
 
@@ -93,33 +92,5 @@ export default function MergePreview({
                 </p>
             )}
         </section>
-    );
-}
-
-/** A plain upright thumbnail for the image list. */
-export function Thumbnail({ item }: { item: ImageItem }) {
-    const upright = displayedSize(item, item.rotation);
-    const wide = upright.width >= upright.height;
-    const width = wide ? 1 : upright.width / upright.height;
-    const height = wide ? upright.height / upright.width : 1;
-
-    return (
-        <div className="absolute inset-[8%]">
-            <div
-                className="absolute overflow-hidden rounded-sm transition-all duration-300"
-                style={{
-                    width: percent(width),
-                    height: percent(height),
-                    left: percent((1 - width) / 2),
-                    top: percent((1 - height) / 2),
-                }}
-            >
-                <RotatedImage
-                    item={item}
-                    boxWidth={upright.width}
-                    boxHeight={upright.height}
-                />
-            </div>
-        </div>
     );
 }

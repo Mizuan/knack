@@ -13,6 +13,7 @@ import { home } from '@/routes';
 export default function ToolShell({
     title,
     description,
+    noun,
     accept,
     emptyHint,
     hasFiles,
@@ -25,6 +26,8 @@ export default function ToolShell({
 }: {
     title: string;
     description: string;
+    /** Plural name of the files, e.g. "images" or "PDFs". */
+    noun: string;
     accept: string;
     emptyHint: string;
     hasFiles: boolean;
@@ -148,7 +151,7 @@ export default function ToolShell({
                         </aside>
                     </div>
                 ) : (
-                    <EmptyDropZone onPick={pick} hint={emptyHint} />
+                    <EmptyDropZone onPick={pick} hint={emptyHint} noun={noun} />
                 )}
             </div>
 
@@ -163,7 +166,7 @@ export default function ToolShell({
                     <div className="flex w-full max-w-md flex-col items-center gap-3 rounded-3xl border-2 border-dashed border-brand bg-card px-6 py-12 text-center">
                         <ImagePlus className="size-10 text-brand" />
                         <p className="font-display text-2xl font-bold tracking-tight">
-                            Drop to add images
+                            Drop to add {noun}
                         </p>
                     </div>
                 </div>
@@ -172,7 +175,15 @@ export default function ToolShell({
     );
 }
 
-function EmptyDropZone({ onPick, hint }: { onPick: () => void; hint: string }) {
+function EmptyDropZone({
+    onPick,
+    hint,
+    noun,
+}: {
+    onPick: () => void;
+    hint: string;
+    noun: string;
+}) {
     return (
         <button
             type="button"
@@ -183,10 +194,10 @@ function EmptyDropZone({ onPick, hint }: { onPick: () => void; hint: string }) {
                 <ImagePlus className="size-8" />
             </span>
             <span className="mt-5 hidden font-display text-2xl font-bold tracking-tight sm:block">
-                Drop images here
+                Drop {noun} here
             </span>
             <span className="mt-5 inline-flex h-12 items-center rounded-full bg-primary px-6 font-medium text-primary-foreground sm:mt-4">
-                Choose images
+                Choose {noun}
             </span>
             <span className="mt-4 text-sm text-muted-foreground">{hint}</span>
         </button>

@@ -27,36 +27,46 @@ import {
 import type { ReactNode } from 'react';
 import { Button } from '@/components/ui/button';
 import { Spinner } from '@/components/ui/spinner';
-import type { ImageItem, ImageList as List } from '@/hooks/use-image-list';
+import type { FileItem, FileListState } from '@/hooks/use-file-list';
 import { formatBytes } from '@/lib/files';
+import { displayedSize } from '@/lib/rotation';
 import { cn } from '@/lib/utils';
 
+type Render<Meta> = (item: FileItem<Meta>) => ReactNode;
+
 /**
- * The picked images: a toolbar (add, sort, clear) and a grid you can drag to
- * reorder. Each tool draws its own preview inside the cards.
+ * The picked files: a toolbar (add, sort, clear) and a grid you can drag to
+ * reorder. Each tool draws its own preview, info line and extra controls.
  */
-export default function ImageList({
+export default function FileGrid<Meta>({
     list,
     pick,
     busy,
     renderPreview,
+    renderInfo = (item) => formatBytes(item.size),
+    renderExtra,
     className,
 }: {
-    list: List;
+    list: FileListState<Meta>;
     pick: () => void;
     busy: boolean;
-    renderPreview: (item: ImageItem) => ReactNode;
+    renderPreview: Render<Meta>;
+    /** The small line under the name; the file size by default. */
+    renderInfo?: Render<Meta>;
+    /** Controls under the card, outside the drag handle. */
+    renderExtra?: Render<Meta>;
     /** Grid columns, e.g. to fit more, smaller cards. */
     className?: string;
 }) {
     const { items } = list;
+    const [one, many] = list.noun;
 
     return (
-        <section aria-label="Images" className="min-w-0">
+        <section aria-label="Files" className="min-w-0">
             <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
                 <p className="text-sm text-muted-foreground">
                     <span className="font-semibold text-foreground">
-                        {items.length} {items.length === 1 ? 'image' : 'images'}
+                        {items.length} {items.length === 1 ? one : many}
                     </span>{' '}
                     · {formatBytes(list.totalBytes)}
                 </p>
@@ -66,7 +76,7 @@ export default function ImageList({
                         size="sm"
                         className="h-10 rounded-full"
                         onClick={pick}
-                        disabled={busy || items.length >= list.maxImages}
+                        disabled={busy || items.length >= list.maxItems}
                     >
                         <Plus />
                         Add
@@ -104,29 +114,36 @@ export default function ImageList({
                 <SortableGrid
                     list={list}
                     renderPreview={renderPreview}
+                    renderInfo={renderInfo}
+                    renderExtra={renderExtra}
                     className={className}
                 />
             </fieldset>
             <p className="mt-4 text-xs text-muted-foreground">
                 <span className="pointer-coarse:hidden">
-                    Drag images to change the order, or drop more images
-                    anywhere on the page.
+                    Drag {many} to change the order, or drop more anywhere on
+                    the page.
                 </span>
                 <span className="hidden pointer-coarse:inline">
-                    Press and hold an image to move it.
+                    Press and hold {one === 'image' ? 'an' : 'a'} {one} to move
+                    it.
                 </span>
             </p>
         </section>
     );
 }
 
-function SortableGrid({
+function SortableGrid<Meta>({
     list,
     renderPreview,
+    renderInfo,
+    renderExtra,
     className,
 }: {
-    list: List;
-    renderPreview: (item: ImageItem) => ReactNode;
+    list: FileListState<Meta>;
+    renderPreview: Render<Meta>;
+    renderInfo: Render<Meta>;
+    renderExtra?: Render<Meta>;
     className?: string;
 }) {
     const { items } = list;
@@ -160,7 +177,7 @@ function SortableGrid({
             accessibility={{
                 screenReaderInstructions: {
                     draggable:
-                        'To move an image, press space or enter, use the arrow keys, then press space or enter again to drop it.',
+                        'To move a file, press space or enter, use the arrow keys, then press space or enter again to drop it.',
                 },
             }}
         >
@@ -172,12 +189,20 @@ function SortableGrid({
                     )}
                 >
                     {items.map((item, index) => (
-                        <ImageCard
+                        <FileCard
                             key={item.id}
                             item={item}
                             position={index + 1}
                             preview={
                                 item.status === 'ready' && renderPreview(item)
+                            }
+                            info={
+                                item.status === 'ready'
+                                    ? renderInfo(item)
+                                    : formatBytes(item.size)
+                            }
+                            extra={
+                                item.status === 'ready' && renderExtra?.(item)
                             }
                             onRotate={() => list.rotate(item.id)}
                             onRemove={() => list.remove(item.id)}
@@ -189,16 +214,20 @@ function SortableGrid({
     );
 }
 
-function ImageCard({
+function FileCard<Meta>({
     item,
     position,
     preview,
+    info,
+    extra,
     onRotate,
     onRemove,
 }: {
-    item: ImageItem;
+    item: FileItem<Meta>;
     position: number;
     preview: ReactNode;
+    info: ReactNode;
+    extra: ReactNode;
     onRotate: () => void;
     onRemove: () => void;
 }) {
@@ -236,7 +265,8 @@ function ImageCard({
                     {item.status === 'error' && (
                         <div className="flex flex-col items-center gap-1.5 px-3 text-center text-xs text-destructive-foreground">
                             <CircleAlert className="size-6" />
-                            Can't read this image. It will be left out.
+                            {item.error ?? "Can't read this file."} It will be
+                            left out.
                         </div>
                     )}
                 </div>
@@ -249,11 +279,12 @@ function ImageCard({
                             {item.name}
                         </span>
                         <span className="block text-[11px] text-muted-foreground">
-                            {formatBytes(item.size)}
+                            {info}
                         </span>
                     </span>
                 </div>
             </div>
+            {extra && <div className="mt-2 px-1 pb-0.5">{extra}</div>}
 
             <div className="absolute top-3 right-3 flex gap-1.5">
                 {item.status === 'ready' && (
@@ -300,12 +331,11 @@ export function RotatedImage({
     boxWidth,
     boxHeight,
 }: {
-    item: ImageItem;
+    item: Pick<FileItem<unknown>, 'thumbnail' | 'rotation'>;
     boxWidth: number;
     boxHeight: number;
 }) {
     const turned = item.rotation === 90 || item.rotation === 270;
-    const percent = (value: number) => `${value * 100}%`;
 
     return (
         <img
@@ -319,5 +349,48 @@ export function RotatedImage({
                 transform: `translate(-50%, -50%) rotate(${item.rotation}deg)`,
             }}
         />
+    );
+}
+
+const percent = (value: number) => `${value * 100}%`;
+
+/** The file's preview, upright and fitted inside the card's square. */
+export function FittedThumbnail({
+    item,
+    className,
+}: {
+    item: Pick<
+        FileItem<unknown>,
+        'thumbnail' | 'rotation' | 'width' | 'height'
+    >;
+    /** Extra classes for the fitted box, e.g. to make it look like a page. */
+    className?: string;
+}) {
+    const upright = displayedSize(item, item.rotation);
+    const wide = upright.width >= upright.height;
+    const width = wide ? 1 : upright.width / upright.height;
+    const height = wide ? upright.height / upright.width : 1;
+
+    return (
+        <div className="absolute inset-[8%]">
+            <div
+                className={cn(
+                    'absolute overflow-hidden rounded-sm transition-all duration-300',
+                    className,
+                )}
+                style={{
+                    width: percent(width),
+                    height: percent(height),
+                    left: percent((1 - width) / 2),
+                    top: percent((1 - height) / 2),
+                }}
+            >
+                <RotatedImage
+                    item={item}
+                    boxWidth={upright.width}
+                    boxHeight={upright.height}
+                />
+            </div>
+        </div>
     );
 }

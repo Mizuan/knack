@@ -3,7 +3,7 @@ import { Check } from 'lucide-react';
 import { useRef, useState } from 'react';
 import { toast } from 'sonner';
 import FileNameField from '@/components/tools/file-name-field';
-import ImageList from '@/components/tools/image-list';
+import FileGrid, { FittedThumbnail } from '@/components/tools/file-grid';
 import Segmented from '@/components/tools/segmented';
 import ToolActions from '@/components/tools/tool-actions';
 import type { ToolProgress, ToolResult } from '@/components/tools/tool-actions';
@@ -16,7 +16,7 @@ import { displayedSize } from '@/lib/rotation';
 import { cn } from '@/lib/utils';
 import { mergeImages } from '@/tools/merge-images/client';
 import { planMerge } from '@/tools/merge-images/layout';
-import MergePreview, { Thumbnail } from '@/tools/merge-images/preview';
+import MergePreview from '@/tools/merge-images/preview';
 import type { MergeOptions } from '@/tools/merge-images/types';
 
 type Format = 'jpg' | 'png';
@@ -148,8 +148,9 @@ export default function MergeImages() {
             <ToolShell
                 title="Merge images"
                 description="Join photos and screenshots into one image: stacked, side by side or in a grid."
+                noun="images"
                 accept="image/*,.heic,.heif"
-                emptyHint={`JPG, PNG, WebP, HEIC and more · up to ${list.maxImages} images`}
+                emptyHint={`JPG, PNG, WebP, HEIC and more · up to ${list.maxItems} images`}
                 hasFiles={list.items.length > 0}
                 busy={busy}
                 onFiles={list.add}
@@ -325,12 +326,14 @@ export default function MergeImages() {
                                 background={background}
                             />
                         )}
-                        <ImageList
+                        <FileGrid
                             list={list}
                             pick={pick}
                             busy={busy}
                             className="grid-cols-3 sm:grid-cols-4 xl:grid-cols-5"
-                            renderPreview={(item) => <Thumbnail item={item} />}
+                            renderPreview={(item) => (
+                                <FittedThumbnail item={item} />
+                            )}
                         />
                     </>
                 )}

@@ -1,5 +1,5 @@
-import { spawnWorker } from '@/lib/worker';
-import type { BuildRequest, WorkerMessage } from './types';
+import { runWorker } from '@/lib/worker';
+import type { BuildRequest, Built } from './types';
 import workerUrl from './worker?worker&url';
 
 export type BuildResult = {
@@ -9,50 +9,22 @@ export type BuildResult = {
     files: number;
 };
 
-/**
- * Build the PDF in a Web Worker so the page stays responsive. Call `cancel`
- * to stop early; the promise then never settles.
- */
+/** Build the PDF (or ZIP of PDFs) in a Web Worker. */
 export function createPdf(
     request: BuildRequest,
     onProgress: (done: number, total: number) => void,
 ): { promise: Promise<BuildResult>; cancel: () => void } {
-    const worker = spawnWorker(workerUrl);
+    const job = runWorker<BuildRequest, Built>(workerUrl, request, onProgress);
 
-    const promise = new Promise<BuildResult>((resolve, reject) => {
-        worker.onmessage = ({ data }: MessageEvent<WorkerMessage>) => {
-            if (data.type === 'progress') {
-                onProgress(data.done, data.total);
-
-                return;
-            }
-
-            worker.terminate();
-
-            if (data.type === 'done') {
-                resolve({
-                    blob: new Blob([data.bytes as Uint8Array<ArrayBuffer>], {
-                        type:
-                            data.kind === 'zip'
-                                ? 'application/zip'
-                                : 'application/pdf',
-                    }),
-                    kind: data.kind,
-                    pages: data.pages,
-                    files: data.files,
-                });
-            } else {
-                reject(new Error(data.message));
-            }
-        };
-
-        worker.onerror = (event) => {
-            worker.terminate();
-            reject(new Error(event.message || 'The PDF builder crashed.'));
-        };
-    });
-
-    worker.postMessage(request);
-
-    return { promise, cancel: () => worker.terminate() };
+    return {
+        cancel: job.cancel,
+        promise: job.promise.then(({ bytes, kind, pages, files }) => ({
+            blob: new Blob([bytes as Uint8Array<ArrayBuffer>], {
+                type: kind === 'zip' ? 'application/zip' : 'application/pdf',
+            }),
+            kind,
+            pages,
+            files,
+        })),
+    };
 }

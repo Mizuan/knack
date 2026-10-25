@@ -1,6 +1,6 @@
 import type { LucideIcon } from 'lucide-react';
 import { FileImage, Files, Images, Shrink } from 'lucide-react';
-import { imagesToPdf, mergeImages } from '@/routes/tools';
+import { imagesToPdf, mergeImages, mergePdfs } from '@/routes/tools';
 
 export type Tool = {
     slug: string;
@@ -34,6 +34,7 @@ export const tools: Tool[] = [
         description:
             'Combine several PDFs into one and pick the pages to keep.',
         icon: Files,
+        href: mergePdfs.url(),
     },
     {
         slug: 'compress-pdf',

@@ -1,4 +1,4 @@
-import { RotatedImage } from '@/components/tools/image-list';
+import { RotatedImage } from '@/components/tools/file-grid';
 import type { ImageItem } from '@/hooks/use-image-list';
 import { displayedSize } from '@/lib/rotation';
 import { pageSizeFor, placeImage } from './layout';

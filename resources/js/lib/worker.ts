@@ -20,3 +20,52 @@ export function spawnWorker(scriptUrl: string): Worker {
 
     return new Worker(boot, { type: 'module' });
 }
+
+/** What a tool worker sends back: progress, then a result or an error. */
+export type WorkerReply<Done> =
+    | { type: 'progress'; done: number; total: number }
+    | ({ type: 'done' } & Done)
+    | { type: 'error'; message: string };
+
+/**
+ * Send one job to a fresh worker and wait for its result. Call `cancel` to
+ * stop early; the promise then never settles.
+ */
+export function runWorker<Request, Done>(
+    scriptUrl: string,
+    request: Request,
+    onProgress: (done: number, total: number) => void,
+): { promise: Promise<Done>; cancel: () => void } {
+    const worker = spawnWorker(scriptUrl);
+
+    const promise = new Promise<Done>((resolve, reject) => {
+        worker.onmessage = ({ data }: MessageEvent<WorkerReply<Done>>) => {
+            if (data.type === 'progress') {
+                onProgress(data.done, data.total);
+
+                return;
+            }
+
+            worker.terminate();
+
+            if (data.type === 'error') {
+                reject(new Error(data.message));
+            } else {
+                const { type: _type, ...done } = data;
+
+                resolve(done as Done);
+            }
+        };
+
+        worker.onerror = (event) => {
+            worker.terminate();
+            reject(
+                new Error(event.message || 'The tool stopped unexpectedly.'),
+            );
+        };
+    });
+
+    worker.postMessage(request);
+
+    return { promise, cancel: () => worker.terminate() };
+}

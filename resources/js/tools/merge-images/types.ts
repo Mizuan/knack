@@ -1,4 +1,5 @@
 import type { Rotation } from '@/lib/rotation';
+import type { WorkerReply } from '@/lib/worker';
 
 export type Direction = 'vertical' | 'horizontal' | 'grid';
 
@@ -39,7 +40,4 @@ export type MergeRequest = {
     format: 'image/jpeg' | 'image/png';
 };
 
-export type WorkerMessage =
-    | { type: 'progress'; done: number; total: number }
-    | { type: 'done'; blob: Blob }
-    | { type: 'error'; message: string };
+export type WorkerMessage = WorkerReply<{ blob: Blob }>;

@@ -2,7 +2,7 @@ import { Head } from '@inertiajs/react';
 import { useRef, useState } from 'react';
 import { toast } from 'sonner';
 import FileNameField from '@/components/tools/file-name-field';
-import ImageList from '@/components/tools/image-list';
+import FileGrid from '@/components/tools/file-grid';
 import Segmented from '@/components/tools/segmented';
 import ToolActions from '@/components/tools/tool-actions';
 import type { ToolProgress, ToolResult } from '@/components/tools/tool-actions';
@@ -103,8 +103,9 @@ export default function ImagesToPdf() {
             <ToolShell
                 title="Images to PDF"
                 description="Turn photos and scans into a PDF. Drag to reorder, rotate any page, then download."
+                noun="images"
                 accept="image/*,.heic,.heif"
-                emptyHint={`JPG, PNG, WebP, HEIC and more · up to ${list.maxImages} images`}
+                emptyHint={`JPG, PNG, WebP, HEIC and more · up to ${list.maxItems} images`}
                 hasFiles={list.items.length > 0}
                 busy={busy}
                 onFiles={list.add}
@@ -195,7 +196,7 @@ export default function ImagesToPdf() {
                 }
             >
                 {(pick) => (
-                    <ImageList
+                    <FileGrid
                         list={list}
                         pick={pick}
                         busy={busy}

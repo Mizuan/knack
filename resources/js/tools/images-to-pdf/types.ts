@@ -6,6 +6,7 @@ export type Margin = 'none' | 'small' | 'normal';
 export type Output = 'single' | 'separate';
 
 import type { Rotation } from '@/lib/rotation';
+import type { WorkerReply } from '@/lib/worker';
 
 export type { Rotation };
 
@@ -29,13 +30,11 @@ export type BuildRequest = {
     title: string;
 };
 
-export type WorkerMessage =
-    | { type: 'progress'; done: number; total: number }
-    | {
-          type: 'done';
-          bytes: Uint8Array;
-          kind: 'pdf' | 'zip';
-          pages: number;
-          files: number;
-      }
-    | { type: 'error'; message: string };
+export type Built = {
+    bytes: Uint8Array;
+    kind: 'pdf' | 'zip';
+    pages: number;
+    files: number;
+};
+
+export type WorkerMessage = WorkerReply<Built>;
