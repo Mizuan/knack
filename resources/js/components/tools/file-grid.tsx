@@ -153,16 +153,7 @@ function SortableGrid<Meta>({
     className?: string;
 }) {
     const { items } = list;
-    const sensors = useSensors(
-        useSensor(MouseSensor, { activationConstraint: { distance: 6 } }),
-        // Long-press to drag on touch screens, so a normal swipe still scrolls.
-        useSensor(TouchSensor, {
-            activationConstraint: { delay: 200, tolerance: 8 },
-        }),
-        useSensor(KeyboardSensor, {
-            coordinateGetter: sortableKeyboardCoordinates,
-        }),
-    );
+    const sensors = useCardSensors();
 
     const handleDragEnd = ({ active, over }: DragEndEvent) => {
         if (!over || active.id === over.id) {
@@ -313,7 +304,7 @@ function FileCard<Meta>({
     );
 }
 
-function CardButton({
+export function CardButton({
     label,
     onClick,
     children,
@@ -332,6 +323,22 @@ function CardButton({
         >
             {children}
         </button>
+    );
+}
+
+/**
+ * Drag settings for card grids: mouse drags after a small move, touch after a
+ * long-press (so a swipe still scrolls), and the keyboard with arrow keys.
+ */
+export function useCardSensors() {
+    return useSensors(
+        useSensor(MouseSensor, { activationConstraint: { distance: 6 } }),
+        useSensor(TouchSensor, {
+            activationConstraint: { delay: 200, tolerance: 8 },
+        }),
+        useSensor(KeyboardSensor, {
+            coordinateGetter: sortableKeyboardCoordinates,
+        }),
     );
 }
 

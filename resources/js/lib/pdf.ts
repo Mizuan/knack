@@ -100,3 +100,72 @@ export async function preparePdf(file: File): Promise<Prepared<PdfMeta>> {
         await document.loadingTask.destroy();
     }
 }
+
+export type PageThumbnail = {
+    /** Zero-based page number. */
+    index: number;
+    url: string;
+    /** The page's upright size in points, including its own rotation. */
+    width: number;
+    height: number;
+};
+
+/**
+ * Draw a small preview of every page, one at a time, calling `onPage` as each
+ * is ready. Stops early when `isCancelled` says so.
+ */
+export async function renderPageThumbnails(
+    source: Blob,
+    onPage: (page: PageThumbnail, total: number) => void,
+    isCancelled: () => boolean,
+    longSide = 240,
+): Promise<void> {
+    const { getDocument } = await loadPdfJs();
+    const task = getDocument({
+        data: new Uint8Array(await source.arrayBuffer()),
+    });
+    const document = await task.promise;
+
+    try {
+        for (let index = 0; index < document.numPages; index++) {
+            if (isCancelled()) {
+                return;
+            }
+
+            const page = await document.getPage(index + 1);
+            const natural = page.getViewport({ scale: 1 });
+            const viewport = page.getViewport({
+                scale: longSide / Math.max(natural.width, natural.height),
+            });
+            const canvas = window.document.createElement('canvas');
+
+            canvas.width = Math.ceil(viewport.width);
+            canvas.height = Math.ceil(viewport.height);
+            await page.render({ canvas, viewport, background: '#ffffff' })
+                .promise;
+
+            const blob = await new Promise<Blob | null>((resolve) =>
+                canvas.toBlob(resolve, 'image/jpeg', 0.8),
+            );
+
+            page.cleanup();
+
+            if (blob) {
+                onPage(
+                    {
+                        index,
+                        url: URL.createObjectURL(blob),
+                        width: natural.width,
+                        height: natural.height,
+                    },
+                    document.numPages,
+                );
+            }
+
+            // Let the page stay responsive between renders.
+            await new Promise((resolve) => setTimeout(resolve, 0));
+        }
+    } finally {
+        await task.destroy();
+    }
+}

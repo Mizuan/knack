@@ -6,6 +6,7 @@ import {
     FileOutput,
     ImageDown,
     Images,
+    LayoutGrid,
     Scissors,
     Shrink,
 } from 'lucide-react';
@@ -15,6 +16,7 @@ import {
     imagesToPdf,
     mergeImages,
     mergePdfs,
+    organizePdf,
     pdfToImages,
     shrinkImages,
     splitPdf,
@@ -68,6 +70,13 @@ export const tools: Tool[] = [
             'Combine several PDFs into one and pick the pages to keep.',
         icon: Files,
         href: mergePdfs.url(),
+    },
+    {
+        slug: 'organize-pdf',
+        title: 'Organise PDF',
+        description: 'Reorder, rotate and delete pages, even across PDFs.',
+        icon: LayoutGrid,
+        href: organizePdf.url(),
     },
     {
         slug: 'split-pdf',
