@@ -82,9 +82,10 @@ function ToolCard({ tool }: { tool: Tool }) {
     const body = (
         <>
             <div className="flex items-start justify-between gap-3">
-                <div className="flex size-10 items-center justify-center rounded-xl bg-primary text-primary-foreground transition-colors group-hover:bg-brand group-hover:text-white sm:size-11">
-                    <Icon className="size-5" />
-                </div>
+                <Icon
+                    className="size-7 text-foreground transition-colors group-hover:text-brand sm:size-8"
+                    strokeWidth={1.75}
+                />
                 {tool.href ? (
                     <ArrowRight className="mt-0.5 size-4 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-foreground sm:size-5" />
                 ) : (
@@ -93,7 +94,7 @@ function ToolCard({ tool }: { tool: Tool }) {
                     </span>
                 )}
             </div>
-            <h3 className="mt-4 font-display text-base leading-tight font-bold tracking-tight sm:text-lg">
+            <h3 className="mt-3 font-display text-base leading-tight font-bold tracking-tight sm:text-lg">
                 {tool.title}
             </h3>
             <p className="mt-1 text-[13px] leading-snug text-muted-foreground sm:text-sm">
