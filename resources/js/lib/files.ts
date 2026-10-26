@@ -53,11 +53,19 @@ export async function isHeif(file: File): Promise<boolean> {
     return text(4, 8) === 'ftyp' && HEIF_BRANDS.includes(text(8, 12));
 }
 
-/** Decode HEIC with libheif (WebAssembly), loaded only when first needed. */
-export async function heifToJpeg(file: File): Promise<Blob> {
+/**
+ * Decode HEIC with libheif (WebAssembly), loaded only when first needed.
+ * PNG keeps every pixel; JPEG is smaller but loses a little detail.
+ */
+export async function decodeHeif(
+    file: File,
+    type: 'image/jpeg' | 'image/png' = 'image/jpeg',
+): Promise<Blob> {
     const { heicTo } = await import('heic-to/csp');
 
-    return heicTo({ blob: file, type: 'image/jpeg', quality: 0.92 });
+    return type === 'image/png'
+        ? heicTo({ blob: file, type })
+        : heicTo({ blob: file, type, quality: 0.92 });
 }
 
 export type Thumbnail = { url: string; width: number; height: number };

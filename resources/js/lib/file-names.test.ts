@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { pdfNames } from './file-names';
+import { pdfNames, withExtension } from './file-names';
 
 describe('pdfNames', () => {
     it('swaps the image extension for .pdf', () => {
@@ -21,6 +21,20 @@ describe('pdfNames', () => {
         expect(pdfNames(['a/b:c?.jpg', '.png'])).toEqual([
             'a b c.pdf',
             'page-2.pdf',
+        ]);
+    });
+});
+
+describe('withExtension', () => {
+    it('swaps any extension and numbers clashes', () => {
+        expect(
+            withExtension(['IMG_1.HEIC', 'img_1.png', 'scan'], 'jpg'),
+        ).toEqual(['IMG_1.jpg', 'img_1 (2).jpg', 'scan.jpg']);
+    });
+
+    it('falls back to a numbered name', () => {
+        expect(withExtension(['.png'], 'webp', 'image')).toEqual([
+            'image-1.webp',
         ]);
     });
 });

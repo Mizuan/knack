@@ -1,7 +1,11 @@
 import { useId } from 'react';
 import { cn } from '@/lib/utils';
 
-type Option<T extends string> = { value: T; label: string };
+type Option<T extends string> = {
+    value: T;
+    label: string;
+    disabled?: boolean;
+};
 
 /** A row of radio buttons styled as a segmented control. */
 export default function Segmented<T extends string>({
@@ -33,6 +37,8 @@ export default function Segmented<T extends string>({
                             option.value === value
                                 ? 'bg-card text-foreground shadow-sm dark:bg-input'
                                 : 'hover:text-foreground',
+                            option.disabled &&
+                                'cursor-not-allowed opacity-40 hover:text-muted-foreground',
                         )}
                     >
                         <input
@@ -40,6 +46,7 @@ export default function Segmented<T extends string>({
                             name={name}
                             value={option.value}
                             checked={option.value === value}
+                            disabled={option.disabled}
                             onChange={() => onChange(option.value)}
                             className="sr-only"
                         />

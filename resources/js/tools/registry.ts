@@ -1,7 +1,8 @@
 import type { LucideIcon } from 'lucide-react';
-import { FileImage, Files, Images, Shrink } from 'lucide-react';
+import { ArrowRightLeft, FileImage, Files, Images, Shrink } from 'lucide-react';
 import {
     compressPdf,
+    convertImages,
     imagesToPdf,
     mergeImages,
     mergePdfs,
@@ -24,6 +25,13 @@ export const tools: Tool[] = [
             'Turn photos and scans into one PDF, in the order you want.',
         icon: FileImage,
         href: imagesToPdf.url(),
+    },
+    {
+        slug: 'convert-images',
+        title: 'Convert images',
+        description: 'Change HEIC, PNG, JPG and WebP into the format you need.',
+        icon: ArrowRightLeft,
+        href: convertImages.url(),
     },
     {
         slug: 'merge-images',

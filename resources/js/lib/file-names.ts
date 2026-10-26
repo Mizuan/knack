@@ -1,25 +1,34 @@
 import { safeFileName } from './files';
 
 /**
- * A PDF name for each image ("IMG_0012.HEIC" → "IMG_0012.pdf"), numbered when
- * two images share a name so nothing in the ZIP is overwritten.
+ * Give each file a new extension ("IMG_0012.HEIC" → "IMG_0012.jpg"),
+ * numbering duplicates so nothing in a ZIP is overwritten.
  */
-export function pdfNames(imageNames: string[]): string[] {
+export function withExtension(
+    names: string[],
+    extension: string,
+    fallback = 'file',
+): string[] {
     const used = new Set<string>();
 
-    return imageNames.map((name, index) => {
+    return names.map((name, index) => {
         const base = safeFileName(
             name.replace(/\.[^.]+$/, ''),
-            `page-${index + 1}`,
+            `${fallback}-${index + 1}`,
         );
-        let candidate = `${base}.pdf`;
+        let candidate = `${base}.${extension}`;
 
         for (let n = 2; used.has(candidate.toLowerCase()); n++) {
-            candidate = `${base} (${n}).pdf`;
+            candidate = `${base} (${n}).${extension}`;
         }
 
         used.add(candidate.toLowerCase());
 
         return candidate;
     });
+}
+
+/** A PDF name for each image, as `withExtension` with "page" fallbacks. */
+export function pdfNames(imageNames: string[]): string[] {
+    return withExtension(imageNames, 'pdf', 'page');
 }
