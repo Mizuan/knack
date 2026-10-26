@@ -73,6 +73,13 @@ class PublicPagesTest extends TestCase
             ->assertInertia(fn (Assert $page) => $page->component('tools/pdf-to-images'));
     }
 
+    public function test_the_split_pdf_tool_is_public()
+    {
+        $this->get(route('tools.split-pdf'))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page->component('tools/split-pdf'));
+    }
+
     public function test_public_registration_is_disabled()
     {
         $this->get('/register')->assertNotFound();

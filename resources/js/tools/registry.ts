@@ -6,6 +6,7 @@ import {
     FileOutput,
     ImageDown,
     Images,
+    Scissors,
     Shrink,
 } from 'lucide-react';
 import {
@@ -16,6 +17,7 @@ import {
     mergePdfs,
     pdfToImages,
     shrinkImages,
+    splitPdf,
 } from '@/routes/tools';
 
 export type Tool = {
@@ -66,6 +68,13 @@ export const tools: Tool[] = [
             'Combine several PDFs into one and pick the pages to keep.',
         icon: Files,
         href: mergePdfs.url(),
+    },
+    {
+        slug: 'split-pdf',
+        title: 'Split PDF',
+        description: 'Pull pages out of a PDF, or split it into smaller PDFs.',
+        icon: Scissors,
+        href: splitPdf.url(),
     },
     {
         slug: 'pdf-to-images',

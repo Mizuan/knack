@@ -12,6 +12,7 @@ Route::inertia('shrink-images', 'tools/shrink-images')->name('tools.shrink-image
 Route::inertia('merge-pdfs', 'tools/merge-pdfs')->name('tools.merge-pdfs');
 Route::inertia('compress-pdf', 'tools/compress-pdf')->name('tools.compress-pdf');
 Route::inertia('pdf-to-images', 'tools/pdf-to-images')->name('tools.pdf-to-images');
+Route::inertia('split-pdf', 'tools/split-pdf')->name('tools.split-pdf');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::inertia('dashboard', 'dashboard')->name('dashboard');
