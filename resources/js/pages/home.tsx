@@ -47,7 +47,7 @@ export default function Home() {
                 <h2 id="tools-heading" className="sr-only">
                     Tools
                 </h2>
-                <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                <ul className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
                     {tools.map((tool) => (
                         <li key={tool.slug} className="flex">
                             <ToolCard tool={tool} />
@@ -82,28 +82,28 @@ function ToolCard({ tool }: { tool: Tool }) {
     const body = (
         <>
             <div className="flex items-start justify-between gap-3">
-                <div className="flex size-12 items-center justify-center rounded-2xl bg-primary text-primary-foreground transition-colors group-hover:bg-brand group-hover:text-white">
-                    <Icon className="size-6" />
+                <div className="flex size-10 items-center justify-center rounded-xl bg-primary text-primary-foreground transition-colors group-hover:bg-brand group-hover:text-white sm:size-11">
+                    <Icon className="size-5" />
                 </div>
                 {tool.href ? (
-                    <ArrowRight className="mt-1 size-5 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-foreground" />
+                    <ArrowRight className="mt-0.5 size-4 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-foreground sm:size-5" />
                 ) : (
                     <span className="rounded-full bg-secondary px-2.5 py-1 text-xs font-medium text-muted-foreground">
                         Soon
                     </span>
                 )}
             </div>
-            <h3 className="mt-6 font-display text-xl font-bold tracking-tight">
+            <h3 className="mt-4 font-display text-base leading-tight font-bold tracking-tight sm:text-lg">
                 {tool.title}
             </h3>
-            <p className="mt-1.5 text-sm text-muted-foreground">
+            <p className="mt-1 text-[13px] leading-snug text-muted-foreground sm:text-sm">
                 {tool.description}
             </p>
         </>
     );
 
     const card =
-        'group flex w-full flex-col rounded-3xl border border-border bg-card p-5 sm:p-6';
+        'group flex w-full flex-col rounded-2xl border border-border bg-card p-4 sm:rounded-3xl sm:p-5';
 
     if (!tool.href) {
         return <div className={`${card} opacity-75`}>{body}</div>;
