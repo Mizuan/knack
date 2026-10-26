@@ -3,6 +3,7 @@ import {
     ArrowRightLeft,
     FileImage,
     Files,
+    FileOutput,
     ImageDown,
     Images,
     Shrink,
@@ -13,6 +14,7 @@ import {
     imagesToPdf,
     mergeImages,
     mergePdfs,
+    pdfToImages,
     shrinkImages,
 } from '@/routes/tools';
 
@@ -64,6 +66,14 @@ export const tools: Tool[] = [
             'Combine several PDFs into one and pick the pages to keep.',
         icon: Files,
         href: mergePdfs.url(),
+    },
+    {
+        slug: 'pdf-to-images',
+        title: 'PDF to images',
+        description:
+            'Save PDF pages as JPG or PNG, all of them or the ones you pick.',
+        icon: FileOutput,
+        href: pdfToImages.url(),
     },
     {
         slug: 'compress-pdf',

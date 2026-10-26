@@ -3,20 +3,16 @@ import { useRef, useState } from 'react';
 import { toast } from 'sonner';
 import FileGrid, { FittedThumbnail } from '@/components/tools/file-grid';
 import FileNameField from '@/components/tools/file-name-field';
+import PagesField from '@/components/tools/pages-field';
 import ToolActions from '@/components/tools/tool-actions';
 import type { ToolProgress, ToolResult } from '@/components/tools/tool-actions';
 import ToolShell from '@/components/tools/tool-shell';
-import { Input } from '@/components/ui/input';
-import type { FileItem } from '@/hooks/use-file-list';
 import { useFileList } from '@/hooks/use-file-list';
 import { formatBytes, safeFileName } from '@/lib/files';
-import { cn } from '@/lib/utils';
 import { mergePdfs } from '@/tools/merge-pdfs/client';
-import { parsePages } from '@/tools/merge-pdfs/pages';
-import { isPdf, preparePdf } from '@/tools/merge-pdfs/prepare';
-import type { PdfMeta } from '@/tools/merge-pdfs/types';
-
-type PdfItem = FileItem<PdfMeta>;
+import { parsePages } from '@/lib/page-ranges';
+import { isPdf, preparePdf } from '@/lib/pdf';
+import type { PdfMeta } from '@/lib/pdf';
 
 const plural = (count: number, one: string, many: string) =>
     `${count} ${count === 1 ? one : many}`;
@@ -191,45 +187,5 @@ export default function MergePdfs() {
                 )}
             </ToolShell>
         </>
-    );
-}
-
-function PagesField({
-    item,
-    onChange,
-}: {
-    item: PdfItem;
-    onChange: (pages: string) => void;
-}) {
-    const value = item.meta?.pages ?? '';
-    const { error } = parsePages(value, item.meta?.pageCount ?? 0);
-    const errorId = `${item.id}-pages-error`;
-
-    return (
-        <div>
-            <Input
-                value={value}
-                onChange={(event) => onChange(event.target.value)}
-                placeholder="All pages"
-                aria-label={`Pages to use from ${item.name}`}
-                aria-invalid={error !== null}
-                aria-describedby={error ? errorId : undefined}
-                inputMode="numeric"
-                autoComplete="off"
-                spellCheck={false}
-                className={cn(
-                    'h-9 text-xs md:text-xs',
-                    error && 'border-destructive',
-                )}
-            />
-            {error && (
-                <p
-                    id={errorId}
-                    className="mt-1 text-[11px] leading-snug text-destructive-foreground"
-                >
-                    {error}
-                </p>
-            )}
-        </div>
     );
 }

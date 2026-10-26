@@ -11,8 +11,8 @@ import { useFileList } from '@/hooks/use-file-list';
 import { formatBytes, safeFileName } from '@/lib/files';
 import { compressPdfs } from '@/tools/compress-pdf/client';
 import type { FileOutcome, Strength } from '@/tools/compress-pdf/types';
-import { isPdf, preparePdf } from '@/tools/merge-pdfs/prepare';
-import type { PdfMeta } from '@/tools/merge-pdfs/types';
+import { isPdf, preparePdf } from '@/lib/pdf';
+import type { PdfMeta } from '@/lib/pdf';
 
 const STRENGTH_HINTS: Record<Strength, string> = {
     strong: 'Smallest files. Images at about 100 dpi: fine on screen, softer in print.',

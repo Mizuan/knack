@@ -2,15 +2,20 @@ import { FileProblem } from '@/hooks/use-file-list';
 import type { Prepared } from '@/hooks/use-file-list';
 import { spawnWorker } from '@/lib/worker';
 import pdfWorkerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?worker&url';
-import { isEncrypted } from './pages';
-import type { PdfMeta } from './types';
+import { isEncrypted } from './page-ranges';
 
-type PdfJs = typeof import('pdfjs-dist');
+export type PdfMeta = {
+    pageCount: number;
+    /** The pages to use as typed, e.g. "1-3, 5"; empty means all. */
+    pages: string;
+};
+
+export type PdfJs = typeof import('pdfjs-dist');
 
 let pdfjs: Promise<PdfJs> | null = null;
 
 /** pdf.js is large, so it loads only once someone adds a PDF. */
-function loadPdfJs(): Promise<PdfJs> {
+export function loadPdfJs(): Promise<PdfJs> {
     pdfjs ??= import('pdfjs-dist').then((lib) => {
         lib.GlobalWorkerOptions.workerPort = spawnWorker(pdfWorkerUrl);
 

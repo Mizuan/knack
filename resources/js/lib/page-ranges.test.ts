@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { isEncrypted, parsePages } from './pages';
+import { isEncrypted, parsePages } from './page-ranges';
 
 describe('parsePages', () => {
     it('takes every page when empty or "all"', () => {
