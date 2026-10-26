@@ -9,10 +9,33 @@ over HTTPS, which the setup below does.
 
 ## 1. Server
 
-- PHP 8.4 with `pdo_sqlite` (Forge installs it by default).
-- Node **22.18+ or 24.11+** for the Vite build. Check with `node -v`; change it
-  under the server's PHP/Node settings in Forge if it is older.
-- A folder for the database outside the site, so deploys never touch it:
+Tinyfold shares `floral-badlands` (139.59.125.137) with other sites, so it
+brings its own PHP and Node versions instead of changing the server's.
+
+- PHP 8.4 with `pdo_sqlite` (installed alongside the server's default 8.3).
+- Node **22.18+**: the server's own Node is older and other sites build with it,
+  so Tinyfold has a private copy, checksum-verified from nodejs.org:
+
+    ```sh
+    V=v22.23.4; DIR=$HOME/.tinyfold-node; mkdir -p "$DIR"; cd "$DIR"
+    curl -fsSLO "https://nodejs.org/dist/$V/node-$V-linux-x64.tar.xz"
+    curl -fsSLO "https://nodejs.org/dist/$V/SHASUMS256.txt"
+    grep " node-$V-linux-x64.tar.xz\$" SHASUMS256.txt | sha256sum -c -
+    tar -xJf "node-$V-linux-x64.tar.xz" && ln -sfn "$DIR/node-$V-linux-x64" "$DIR/current"
+    ```
+
+    To upgrade later, run the same with the new version; `current` moves to it.
+
+- A folder of links that the deploy script puts first on its `PATH`, so the
+  build's `php artisan` calls use PHP 8.4 and `npm` uses the private Node:
+
+    ```sh
+    B=$HOME/.tinyfold-bin; mkdir -p "$B"
+    ln -sfn /usr/bin/php8.4 "$B/php"
+    for t in node npm npx; do ln -sfn "$HOME/.tinyfold-node/current/bin/$t" "$B/$t"; done
+    ```
+
+- The database lives outside the site, so deploys never touch it:
 
     ```sh
     mkdir -p /home/forge/tinyfold-data
@@ -56,13 +79,13 @@ MAIL_MAILER=log
 
 ## 4. Deploy script
 
-Start from the script Forge generates and keep its release macros. Make sure it
-builds the front end and migrates:
-
 ```sh
 $CREATE_RELEASE()
 
 cd $FORGE_RELEASE_DIRECTORY
+
+# Tinyfold builds with PHP 8.4 and its own Node 22 LTS (see section 1)
+export PATH="/home/forge/.tinyfold-bin:$PATH"
 
 $FORGE_COMPOSER install --no-dev --no-interaction --prefer-dist --optimize-autoloader
 
@@ -75,8 +98,9 @@ $FORGE_PHP artisan optimize
 $ACTIVATE_RELEASE()
 ```
 
-`npm run build` downloads the fonts once and bundles them, so the server needs
-outbound internet during the build only.
+Use `npm ci` on its own: an `|| npm install` fallback can quietly install
+different versions than the lockfile. `npm run build` downloads the fonts once
+and bundles them, so the server needs outbound internet during the build only.
 
 ## 5. After the first deploy
 
