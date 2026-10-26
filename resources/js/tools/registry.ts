@@ -27,13 +27,21 @@ export type Tool = {
     title: string;
     description: string;
     icon: LucideIcon;
+    group: 'pdf' | 'image';
     /** Set once the tool is live; tools without one show as "Soon". */
     href?: string;
 };
 
+/** The home page's sections, in order. Tools appear in list order within each. */
+export const toolGroups = [
+    { key: 'pdf', title: 'PDF tools' },
+    { key: 'image', title: 'Image tools' },
+] as const;
+
 export const tools: Tool[] = [
     {
         slug: 'images-to-pdf',
+        group: 'pdf',
         title: 'Images to PDF',
         description:
             'Turn photos and scans into one PDF, in the order you want.',
@@ -41,7 +49,51 @@ export const tools: Tool[] = [
         href: imagesToPdf.url(),
     },
     {
+        slug: 'merge-pdfs',
+        group: 'pdf',
+        title: 'Merge PDFs',
+        description:
+            'Combine several PDFs into one and pick the pages to keep.',
+        icon: Files,
+        href: mergePdfs.url(),
+    },
+    {
+        slug: 'split-pdf',
+        group: 'pdf',
+        title: 'Split PDF',
+        description: 'Pull pages out of a PDF, or split it into smaller PDFs.',
+        icon: Scissors,
+        href: splitPdf.url(),
+    },
+    {
+        slug: 'organize-pdf',
+        group: 'pdf',
+        title: 'Organise PDF',
+        description: 'Reorder, rotate and delete pages, even across PDFs.',
+        icon: LayoutGrid,
+        href: organizePdf.url(),
+    },
+    {
+        slug: 'compress-pdf',
+        group: 'pdf',
+        title: 'Compress PDF',
+        description:
+            'Make a PDF smaller so it fits in an email or upload form.',
+        icon: Shrink,
+        href: compressPdf.url(),
+    },
+    {
+        slug: 'pdf-to-images',
+        group: 'pdf',
+        title: 'PDF to images',
+        description:
+            'Save PDF pages as JPG or PNG, all of them or the ones you pick.',
+        icon: FileOutput,
+        href: pdfToImages.url(),
+    },
+    {
         slug: 'convert-images',
+        group: 'image',
         title: 'Convert images',
         description: 'Change HEIC, PNG, JPG and WebP into the format you need.',
         icon: ArrowRightLeft,
@@ -49,6 +101,7 @@ export const tools: Tool[] = [
     },
     {
         slug: 'shrink-images',
+        group: 'image',
         title: 'Shrink images',
         description:
             'Get photos under a size limit, like 1 MB for an upload form.',
@@ -57,48 +110,11 @@ export const tools: Tool[] = [
     },
     {
         slug: 'merge-images',
+        group: 'image',
         title: 'Merge images',
         description:
             'Join two or more images side by side, stacked or in a grid.',
         icon: Images,
         href: mergeImages.url(),
-    },
-    {
-        slug: 'merge-pdfs',
-        title: 'Merge PDFs',
-        description:
-            'Combine several PDFs into one and pick the pages to keep.',
-        icon: Files,
-        href: mergePdfs.url(),
-    },
-    {
-        slug: 'organize-pdf',
-        title: 'Organise PDF',
-        description: 'Reorder, rotate and delete pages, even across PDFs.',
-        icon: LayoutGrid,
-        href: organizePdf.url(),
-    },
-    {
-        slug: 'split-pdf',
-        title: 'Split PDF',
-        description: 'Pull pages out of a PDF, or split it into smaller PDFs.',
-        icon: Scissors,
-        href: splitPdf.url(),
-    },
-    {
-        slug: 'pdf-to-images',
-        title: 'PDF to images',
-        description:
-            'Save PDF pages as JPG or PNG, all of them or the ones you pick.',
-        icon: FileOutput,
-        href: pdfToImages.url(),
-    },
-    {
-        slug: 'compress-pdf',
-        title: 'Compress PDF',
-        description:
-            'Make a PDF smaller so it fits in an email or upload form.',
-        icon: Shrink,
-        href: compressPdf.url(),
     },
 ];

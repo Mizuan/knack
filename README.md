@@ -11,10 +11,14 @@ server only sends the app.
 | Tool               | What it does                                                                                                                                                                                               |
 | ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Images to PDF**  | Turn photos and scans into a PDF. Reorder, rotate, choose A4, Letter or "fit image" pages and margins, with a live page preview. One PDF, or a PDF per image as a ZIP. JPEGs go in without re-compressing. |
-| **Convert images** | HEIC, JPG, PNG, WebP and more into JPG, PNG or WebP, with quality and size options. Converting removes hidden photo details such as GPS location.                                                          |
-| **Merge images**   | Join images stacked, in a row or in a grid, with spacing, background colour, JPG or PNG output and a live preview.                                                                                         |
 | **Merge PDFs**     | Combine PDFs, reorder them, pick pages per file (`1-3, 5, 8-`) and rotate a file. Locked PDFs are flagged rather than merged into garbled pages.                                                           |
+| **Split PDF**      | Pull chosen pages into one PDF, or split into a PDF per page or every few pages, named after their pages.                                                                                                  |
+| **Organise PDF**   | Every page as a card: reorder, rotate and delete pages, even across several PDFs, with undo and reset.                                                                                                     |
 | **Compress PDF**   | Shrink the photos inside a PDF (Strong, Balanced or Light) and clear out leftover data. Never hands back a bigger file.                                                                                    |
+| **PDF to images**  | Save pages as JPG or PNG at screen, standard or print resolution.                                                                                                                                          |
+| **Convert images** | HEIC, JPG, PNG, WebP and more into JPG, PNG or WebP, with quality and size options. Converting removes hidden photo details such as GPS location.                                                          |
+| **Shrink images**  | Get photos under a size limit (like 1 MB for an upload form): the best quality that fits, smaller only when needed.                                                                                        |
+| **Merge images**   | Join images stacked, in a row or in a grid, with spacing, background colour, JPG or PNG output and a live preview.                                                                                         |
 
 All image tools read iPhone **HEIC** photos and respect the camera's
 orientation, so sideways phone pictures come out upright.

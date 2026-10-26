@@ -1,7 +1,7 @@
 import { Head, Link } from '@inertiajs/react';
 import { ArrowRight, Lock, UserX, Zap } from 'lucide-react';
 import type { Tool } from '@/tools/registry';
-import { tools } from '@/tools/registry';
+import { toolGroups, tools } from '@/tools/registry';
 
 const promises = [
     {
@@ -40,21 +40,30 @@ export default function Home() {
                 </p>
             </section>
 
-            <section
-                aria-labelledby="tools-heading"
-                className="mx-auto max-w-6xl px-4 pb-16 sm:px-6"
-            >
-                <h2 id="tools-heading" className="sr-only">
-                    Tools
-                </h2>
-                <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-5">
-                    {tools.map((tool) => (
-                        <li key={tool.slug} className="flex">
-                            <ToolCard tool={tool} />
-                        </li>
-                    ))}
-                </ul>
-            </section>
+            <div className="mx-auto max-w-6xl space-y-10 px-4 pb-16 sm:px-6">
+                {toolGroups.map((group) => (
+                    <section
+                        key={group.key}
+                        aria-labelledby={`${group.key}-tools`}
+                    >
+                        <h2
+                            id={`${group.key}-tools`}
+                            className="mb-4 font-display text-lg font-bold tracking-tight sm:text-xl"
+                        >
+                            {group.title}
+                        </h2>
+                        <ul className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3">
+                            {tools
+                                .filter((tool) => tool.group === group.key)
+                                .map((tool) => (
+                                    <li key={tool.slug} className="flex">
+                                        <ToolCard tool={tool} />
+                                    </li>
+                                ))}
+                        </ul>
+                    </section>
+                ))}
+            </div>
 
             <section className="border-t border-border/70 bg-card/60">
                 <div className="mx-auto grid max-w-6xl gap-8 px-4 py-12 sm:grid-cols-3 sm:px-6">
