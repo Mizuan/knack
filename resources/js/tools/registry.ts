@@ -1,11 +1,19 @@
 import type { LucideIcon } from 'lucide-react';
-import { ArrowRightLeft, FileImage, Files, Images, Shrink } from 'lucide-react';
+import {
+    ArrowRightLeft,
+    FileImage,
+    Files,
+    ImageDown,
+    Images,
+    Shrink,
+} from 'lucide-react';
 import {
     compressPdf,
     convertImages,
     imagesToPdf,
     mergeImages,
     mergePdfs,
+    shrinkImages,
 } from '@/routes/tools';
 
 export type Tool = {
@@ -32,6 +40,14 @@ export const tools: Tool[] = [
         description: 'Change HEIC, PNG, JPG and WebP into the format you need.',
         icon: ArrowRightLeft,
         href: convertImages.url(),
+    },
+    {
+        slug: 'shrink-images',
+        title: 'Shrink images',
+        description:
+            'Get photos under a size limit, like 1 MB for an upload form.',
+        icon: ImageDown,
+        href: shrinkImages.url(),
     },
     {
         slug: 'merge-images',

@@ -59,6 +59,13 @@ class PublicPagesTest extends TestCase
             ->assertInertia(fn (Assert $page) => $page->component('tools/convert-images'));
     }
 
+    public function test_the_shrink_images_tool_is_public()
+    {
+        $this->get(route('tools.shrink-images'))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page->component('tools/shrink-images'));
+    }
+
     public function test_public_registration_is_disabled()
     {
         $this->get('/register')->assertNotFound();

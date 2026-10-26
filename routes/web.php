@@ -8,6 +8,7 @@ Route::inertia('privacy', 'privacy')->name('privacy');
 Route::inertia('images-to-pdf', 'tools/images-to-pdf')->name('tools.images-to-pdf');
 Route::inertia('convert-images', 'tools/convert-images')->name('tools.convert-images');
 Route::inertia('merge-images', 'tools/merge-images')->name('tools.merge-images');
+Route::inertia('shrink-images', 'tools/shrink-images')->name('tools.shrink-images');
 Route::inertia('merge-pdfs', 'tools/merge-pdfs')->name('tools.merge-pdfs');
 Route::inertia('compress-pdf', 'tools/compress-pdf')->name('tools.compress-pdf');
 

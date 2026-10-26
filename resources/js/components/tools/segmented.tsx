@@ -15,6 +15,8 @@ export default function Segmented<T extends string>({
     onChange,
     disabled = false,
     hint,
+    columns,
+    hideLabel = false,
 }: {
     label: string;
     value: T;
@@ -22,13 +24,36 @@ export default function Segmented<T extends string>({
     onChange: (value: T) => void;
     disabled?: boolean;
     hint?: string;
+    /** Wrap the options into rows of this many; one row when unset. */
+    columns?: number;
+    /** Keep the label for screen readers only, e.g. next to a field. */
+    hideLabel?: boolean;
 }) {
     const name = useId();
 
     return (
         <fieldset disabled={disabled} className="group/segmented min-w-0">
-            <legend className="mb-2 text-sm font-medium">{label}</legend>
-            <div className="grid auto-cols-fr grid-flow-col gap-1 rounded-xl bg-secondary p-1 group-disabled/segmented:opacity-50">
+            <legend
+                className={cn(
+                    'mb-2 text-sm font-medium',
+                    hideLabel && 'sr-only',
+                )}
+            >
+                {label}
+            </legend>
+            <div
+                className={cn(
+                    'grid gap-1 rounded-xl bg-secondary p-1 group-disabled/segmented:opacity-50',
+                    !columns && 'auto-cols-fr grid-flow-col',
+                )}
+                style={
+                    columns
+                        ? {
+                              gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`,
+                          }
+                        : undefined
+                }
+            >
                 {options.map((option) => (
                     <label
                         key={option.value}
